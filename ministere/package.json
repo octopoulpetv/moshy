@@ -1,0 +1,28 @@
+{
+  "name": "ministere",
+  "version": "0.1.0",
+  "description": "Le Ministère — système de promotion autonome du serveur FiveM THE EMPIRE",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "cli": "node src/cli.js",
+    "demo": "node src/cli.js demo"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.134.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/ibm-plex-serif": "^5.3.0",
+    "@fontsource/oswald": "^5.3.0",
+    "better-sqlite3": "^13.0.3",
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "node-cron": "^4.6.0",
+    "playwright-core": "^1.64.1"
+  }
+}

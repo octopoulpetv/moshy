@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Le Ministère</title>
+<link rel="stylesheet" href="/fonts/oswald/500.css">
+<link rel="stylesheet" href="/fonts/oswald/700.css">
+<link rel="stylesheet" href="/fonts/ibm-plex-mono/400.css">
+<link rel="stylesheet" href="/fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="/fonts/ibm-plex-sans/400.css">
+<link rel="stylesheet" href="/fonts/ibm-plex-sans/600.css">
+<style>
+:root{
+  --bg:#111316;--panel:#191c20;--panel2:#20242a;--line:#2c3138;--ink:#ece6d8;--muted:#9a9483;
+  --red:#b3261e;--red2:#d8463b;--gold:#c9a227;--green:#3f8f6e;--blue:#4a7bb8;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;--sans:'IBM Plex Sans',system-ui,sans-serif;--display:Oswald,Impact,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+button,input,select,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:#0c0d0fee;backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.bar{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.brand{font-family:var(--display);font-size:26px;letter-spacing:.08em;text-transform:uppercase}
+.brand small{display:block;font:500 11px var(--mono);letter-spacing:.2em;color:var(--muted)}
+.kpis{display:flex;gap:10px;flex-wrap:wrap;flex:1}
+.kpi{background:var(--panel);border:1px solid var(--line);padding:6px 12px;border-radius:6px;font:12px var(--mono);color:var(--muted)}
+.kpi b{color:var(--ink);font-size:15px;margin-left:4px}
+.kpi.ok b{color:var(--green)} .kpi.ko b{color:var(--red2)}
+nav{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;gap:4px;overflow-x:auto}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;color:var(--muted);cursor:pointer;white-space:nowrap;font:600 13px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+nav button.on{color:var(--ink);border-color:var(--red)}
+main{max-width:1280px;margin:0 auto;padding:22px 20px 80px}
+.btn{background:var(--panel2);border:1px solid var(--line);padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px}
+.btn:hover{border-color:#4a515b}
+.btn.red{background:var(--red);border-color:var(--red)} .btn.red:hover{background:var(--red2)}
+.btn.green{background:#245c46;border-color:#2f7a5c}
+.btn.ghost{background:none}
+a.btn{color:var(--ink);text-decoration:none;display:inline-block}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.media{background:#0a0b0d;display:flex;gap:2px;overflow-x:auto;scroll-snap-type:x mandatory}
+.media>*{flex:0 0 100%;scroll-snap-align:center;max-height:520px;object-fit:contain;background:#0a0b0d;width:100%}
+.body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.title{font-weight:600;font-size:16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:11px var(--mono);letter-spacing:.05em;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted);text-transform:uppercase}
+.chip.s-ready{color:var(--gold);border-color:#6b5a1b}.chip.s-approved{color:var(--green);border-color:#285c47}
+.chip.s-published{color:var(--blue);border-color:#2c4a70}.chip.s-rejected,.chip.s-draft{color:var(--red2);border-color:#6d2420}
+.chip.s-rendering{color:var(--ink)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.err{background:#3a1512;border:1px solid #6d2420;color:#ffb4ab;padding:8px 10px;border-radius:6px;font:12px var(--mono)}
+details.pub{border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
+details.pub summary{cursor:pointer;padding:8px 12px;display:flex;justify-content:space-between;gap:10px;font-weight:600;font-size:14px;list-style:none}
+details.pub summary::-webkit-details-marker{display:none}
+details.pub summary span{font:12px var(--mono);color:var(--muted);font-weight:400}
+.pubin{padding:0 12px 12px;display:flex;flex-direction:column;gap:8px}
+textarea{width:100%;background:#0f1114;border:1px solid var(--line);border-radius:6px;padding:8px 10px;resize:vertical;min-height:90px;font-size:13px}
+input,select{background:#0f1114;border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row input{width:90px}
+.link{font:12px var(--mono);color:var(--gold);word-break:break-all}
+.empty{color:var(--muted);text-align:center;padding:60px 0;font-family:var(--mono)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 28px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+td.n{font-family:var(--mono);text-align:right} th.n{text-align:right}
+h2{font-family:var(--display);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:20px;margin:6px 0 10px}
+.big{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:26px}
+.big div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.big b{display:block;font:700 34px var(--display)}
+.big span{font:11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.note{background:var(--panel);border-left:3px solid var(--gold);padding:10px 14px;border-radius:4px;color:#d9d2c0;margin-bottom:18px;font-size:14px}
+dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;width:min(760px,94vw);padding:0}
+dialog::backdrop{background:#000a}
+dialog form{padding:20px;display:flex;flex-direction:column;gap:12px;max-height:86vh;overflow:auto}
+label{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+label input,label select{width:100%;font:14px var(--sans);text-transform:none;letter-spacing:0;color:var(--ink)}
+label textarea{font:13px var(--sans);text-transform:none;letter-spacing:0;color:var(--ink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);padding:10px 16px;border-radius:8px;z-index:20;font-size:14px}
+@media (max-width:520px){.grid{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">Le Ministère<small id="sub">—</small></div>
+    <div class="kpis" id="kpis"></div>
+    <button class="btn" id="btnBrief">+ Brief manuel</button>
+    <button class="btn red" id="btnGen">Générer</button>
+  </div>
+  <nav id="tabs">
+    <button data-tab="ready" class="on">À valider</button>
+    <button data-tab="approved">Validés</button>
+    <button data-tab="published">Publiés</button>
+    <button data-tab="all">Tous</button>
+    <button data-tab="stats">Statistiques</button>
+    <button data-tab="links">Liens & invitations</button>
+  </nav>
+</header>
+<main id="main"></main>
+
+<dialog id="dlgBrief"><form method="dialog" id="fBrief">
+  <h2>Brief manuel</h2>
+  <p style="margin:0;color:var(--muted);font-size:14px">Donne l'idée : le Ministère rédige, met en page et rend le contenu.</p>
+  <div class="two">
+    <label>Format<select name="format">
+      <option value="short">Short vidéo</option><option value="affiche">Affiche</option><option value="communique">Communiqué</option>
+      <option value="corpo">Pub Kronos/Aethernet/Helix</option><option value="fiche">Fiche crédit civique</option>
+      <option value="countdown">Compte à rebours</option><option value="texte">Texte</option></select></label>
+    <label>Angle<select name="angle" id="angleSel"></select></label>
+  </div>
+  <label>Idée / accroche<textarea name="hook" required placeholder="Ex. : un avis officiel qui annonce que les nouveaux arrivants démarrent avec un crédit civique de 500"></textarea></label>
+  <label>Plateformes<div class="row" id="platBoxes"></div></label>
+  <div class="actions"><button class="btn red" value="ok">Lancer</button><button class="btn ghost" value="cancel" formnovalidate>Annuler</button></div>
+</form></dialog>
+
+<dialog id="dlgEdit"><form method="dialog" id="fEdit">
+  <h2>Corriger le contenu</h2>
+  <div id="editFields"></div>
+  <div class="actions"><button class="btn red" value="ok">Enregistrer et re-rendre</button><button class="btn ghost" value="cancel" formnovalidate>Annuler</button></div>
+</form></dialog>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s = '') => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let STATE = null, TAB = 'ready', POSTS = [];
+
+async function api(path, opts = {}) {
+  const res = await fetch('/api' + path, { headers: { 'content-type': 'application/json' }, ...opts,
+    body: opts.body ? JSON.stringify(opts.body) : undefined });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  return data;
+}
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.append(t); setTimeout(() => t.remove(), 3200);
+}
+
+async function loadState() {
+  STATE = await api('/state');
+  $('#sub').textContent = `${STATE.server_name} · ${STATE.phase.label}`;
+  const c = STATE.counts;
+  $('#kpis').innerHTML = [
+    ['Ouverture', STATE.isOpen ? 'ouvert' : 'J-' + STATE.daysLeft],
+    ['À valider', c.ready || 0], ['Validés', c.approved || 0], ['Publiés', c.published || 0],
+    ['Coût Claude', '$' + STATE.cost.usd],
+  ].map(([k, v]) => `<div class="kpi">${k}<b>${v}</b></div>`).join('')
+    + `<div class="kpi ${STATE.discord.ready ? 'ok' : 'ko'}">Discord<b>${STATE.discord.ready ? 'connecté' : STATE.discord.configured ? 'erreur' : 'non configuré'}</b></div>`
+    + `<div class="kpi ${STATE.claude ? 'ok' : 'ko'}">Claude<b>${STATE.claude ? 'ok' : 'clé absente'}</b></div>`
+    + (STATE.running ? `<div class="kpi ok">Génération<b>en cours…</b></div>` : '');
+  $('#btnGen').disabled = STATE.running || !STATE.claude;
+  $('#btnBrief').disabled = !STATE.claude;
+}
+
+function mediaHtml(p) {
+  if (!p.media.length) return `<div class="media"><div class="empty">${p.status === 'rendering' ? 'Rendu en cours…' : 'Pas encore de média'}</div></div>`;
+  const poster = p.media.find((m) => m.ratio === '9:16' && m.kind === 'image');
+  return `<div class="media">${p.media.map((m) => m.kind === 'video'
+    ? `<video src="/media/${m.file}" ${poster ? `poster="/media/${poster.file}"` : ''} controls preload="none" playsinline></video>`
+    : `<img src="/media/${m.file}" loading="lazy" alt="">`).join('')}</div>`;
+}
+
+function pubHtml(p, pub) {
+  const label = STATE.platforms[pub.platform]?.label || pub.platform;
+  const meta = [pub.published_at ? 'publié' : 'à publier', `${pub.clicks} clic${pub.clicks > 1 ? 's' : ''}`, pub.views != null ? `${pub.views} vues` : ''].filter(Boolean).join(' · ');
+  const reddit = pub.platform === 'reddit' && p.reddit_title ? `<label>Titre Reddit<input value="${esc(p.reddit_title)}" readonly></label>` : '';
+  const discordBtn = pub.platform === 'discord' && STATE.discord.ready
+    ? `<button class="btn green" data-act="discord" data-id="${p.id}">Publier sur Discord</button>` : '';
+  return `<details class="pub"><summary>${esc(label)}<span>${meta}</span></summary><div class="pubin">
+    ${reddit}<textarea readonly>${esc(pub.caption)}</textarea>
+    <div class="actions">
+      <button class="btn" data-copy>Copier la légende</button>
+      ${discordBtn}
+      ${pub.published_at ? '' : `<button class="btn" data-act="publish" data-id="${p.id}" data-platform="${pub.platform}">Marquer publié</button>`}
+    </div>
+    ${STATE.platforms[pub.platform]?.clickable_links ? `<div class="link">Lien tracké : ${esc(pub.link)}</div>` : ''}
+    ${pub.published_at ? `<div class="row" data-pubid="${pub.id}">
+      <input placeholder="vues" value="${pub.views ?? ''}" data-k="views"><input placeholder="likes" value="${pub.likes ?? ''}" data-k="likes">
+      <input placeholder="comm." value="${pub.comments ?? ''}" data-k="comments"><input placeholder="partages" value="${pub.shares ?? ''}" data-k="shares">
+      <button class="btn" data-act="stats">OK</button></div>
+      ${pub.url ? `<a class="link" href="${esc(pub.url)}" target="_blank" rel="noopener">${esc(pub.url)}</a>` : ''}` : ''}
+  </div></details>`;
+}
+
+function cardHtml(p) {
+  const v = p.content?.visual || {};
+  const canEdit = ['ready', 'approved', 'rejected', 'draft'].includes(p.status);
+  return `<article class="card" data-post="${p.id}">
+    ${mediaHtml(p)}
+    <div class="body">
+      <div class="chips"><span class="chip s-${p.status}">${p.status}</span><span class="chip">${esc(p.format)}</span><span class="chip">${esc(p.angle)}</span><span class="chip">#${p.id}</span></div>
+      <div class="title">${esc(p.title)}</div>
+      ${p.content?.voiceover ? `<div style="color:var(--muted);font-size:13px"><b>Voix off :</b> ${esc(p.content.voiceover)}</div>` : ''}
+      ${p.error ? `<div class="err">${esc(p.error)}</div>` : ''}
+      ${p.review_note ? `<div class="note">Note : ${esc(p.review_note)}</div>` : ''}
+      <div class="actions">
+        ${p.status === 'ready' || p.status === 'rejected' ? `<button class="btn green" data-act="approve" data-id="${p.id}">Valider</button>` : ''}
+        ${p.status === 'ready' ? `<button class="btn" data-act="reject" data-id="${p.id}">Rejeter</button>` : ''}
+        ${canEdit ? `<button class="btn" data-act="edit" data-id="${p.id}">Corriger</button>` : ''}
+        ${canEdit ? `<button class="btn ghost" data-act="render" data-id="${p.id}">Re-rendre</button>` : ''}
+        ${p.media.map((m) => `<a class="btn ghost" href="/media/${m.file}" download>⬇ ${m.kind === 'video' ? 'MP4' : m.ratio}</a>`).join('')}
+      </div>
+      ${['approved', 'published'].includes(p.status) ? p.publications.map((pub) => pubHtml(p, pub)).join('') : ''}
+    </div></article>`;
+}
+
+async function renderPosts() {
+  const q = TAB === 'all' ? '' : `?status=${TAB}`;
+  POSTS = await api('/posts' + q);
+  const intro = {
+    ready: 'Contenus générés en attente de ta validation. Rien ne part sans ton accord.',
+    approved: 'Contenus validés : copie la légende, télécharge le média, publie, puis clique « Marquer publié » (colle l\'URL du post si tu l\'as).',
+    published: 'Après 24-48 h, saisis les vues et likes de chaque publication : le stratège s\'en sert pour choisir les prochains contenus.',
+  }[TAB];
+  $('#main').innerHTML = (intro ? `<div class="note">${intro}</div>` : '')
+    + (POSTS.length ? `<div class="grid">${POSTS.map(cardHtml).join('')}</div>` : `<div class="empty">Aucun contenu ici.</div>`);
+}
+
+async function renderStats() {
+  const s = await api('/stats');
+  const tbl = (rows, key, label) => rows.length ? `<table><tr><th>${label}</th><th class="n">Posts</th><th class="n">Clics</th><th class="n">Arrivées</th><th class="n">Vues</th><th class="n">Score moyen</th></tr>
+    ${rows.map((r) => `<tr><td>${esc(r[key])}</td><td class="n">${r.posts}</td><td class="n">${r.clicks}</td><td class="n">${r.joins.toFixed(1)}</td><td class="n">${r.views}</td><td class="n">${r.avg_score}</td></tr>`).join('')}</table>`
+    : '<div class="empty">Pas encore de données.</div>';
+  $('#main').innerHTML = `
+    <div class="big"><div><b>${s.totals.joins}</b><span>Arrivées Discord (30 j)</span></div>
+      <div><b>${s.totals.clicks}</b><span>Clics uniques</span></div><div><b>${s.totals.posts}</b><span>Contenus publiés</span></div>
+      <div><b>${s.totals.unattributed_joins}</b><span>Arrivées sans source</span></div></div>
+    <h2>À booster avec le budget pub</h2>
+    ${s.boost.length ? `<table><tr><th>Contenu</th><th>Format</th><th class="n">Score</th></tr>${s.boost.map((p) => `<tr><td>#${p.id} ${esc(p.title)}</td><td>${p.format}</td><td class="n">${p.score}</td></tr>`).join('')}</table>`
+      : '<div class="note">Pas encore assez de données. Garde le budget pour la phase « compte à rebours ».</div>'}
+    <h2>Par plateforme</h2>
+    ${s.platforms.length ? `<table><tr><th>Plateforme</th><th class="n">Clics</th><th class="n">Clics bio</th><th class="n">Arrivées</th><th class="n">Départs</th></tr>
+      ${s.platforms.map((r) => `<tr><td>${esc(r.platform)}</td><td class="n">${r.clicks}</td><td class="n">${r.bio_clicks}</td><td class="n">${r.joins}</td><td class="n">${r.left}</td></tr>`).join('')}</table>` : '<div class="empty">Pas encore d\'arrivées mesurées.</div>'}
+    <h2>Par angle</h2>${tbl(s.byAngle, 'angle', 'Angle')}
+    <h2>Par format</h2>${tbl(s.byFormat, 'format', 'Format')}`;
+}
+
+function renderLinks() {
+  const inv = Object.fromEntries(STATE.invites.map((i) => [i.platform, i]));
+  $('#main').innerHTML = `
+    <div class="note">Mets ces liens dans la bio de chaque compte. Ils redirigent vers une invitation Discord propre à la plateforme : le Ministère sait ainsi d'où vient chaque nouveau membre.</div>
+    <h2>Liens « en bio »</h2>
+    <table><tr><th>Plateforme</th><th>Lien à mettre en bio</th><th>Invitation Discord liée</th></tr>
+    ${STATE.bioLinks.map((b) => `<tr><td>${esc(b.label)}</td><td class="link">${esc(b.url)}</td><td class="link">${esc(inv[b.platform]?.url || 'invitation de secours')}</td></tr>`).join('')}</table>
+    <h2>Invitations par plateforme</h2>
+    ${STATE.invites.length ? `<table><tr><th>Plateforme</th><th>Invitation</th></tr>${STATE.invites.map((i) => `<tr><td>${esc(i.platform)}</td><td class="link">${esc(i.url)}</td></tr>`).join('')}</table>`
+      : '<div class="empty">Le bot Discord n\'a pas encore créé les invitations (configure DISCORD_* dans .env).</div>'}`;
+}
+
+async function render() {
+  await loadState();
+  if (TAB === 'stats') return renderStats();
+  if (TAB === 'links') return renderLinks();
+  return renderPosts();
+}
+
+// ── Actions ───────────────────────────────────────────────────────────
+$('#tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  TAB = b.dataset.tab; [...$('#tabs').children].forEach((x) => x.classList.toggle('on', x === b)); render();
+});
+
+$('#main').addEventListener('click', async (e) => {
+  const copy = e.target.closest('[data-copy]');
+  if (copy) {
+    const ta = copy.closest('.pubin').querySelector('textarea');
+    await navigator.clipboard.writeText(ta.value).catch(() => { ta.select(); document.execCommand('copy'); });
+    return toast('Légende copiée');
+  }
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const id = b.dataset.id;
+  b.disabled = true;
+  try {
+    switch (b.dataset.act) {
+      case 'approve': await api(`/posts/${id}/approve`, { method: 'POST' }); toast('Validé'); break;
+      case 'reject': await api(`/posts/${id}/reject`, { method: 'POST', body: { note: prompt('Pourquoi ? (aide à améliorer les prochains)') || '' } }); break;
+      case 'render': toast('Rendu en cours…'); await api(`/posts/${id}/render`, { method: 'POST' }); toast('Rendu terminé'); break;
+      case 'edit': return openEdit(POSTS.find((p) => String(p.id) === id));
+      case 'publish': {
+        const url = prompt('URL de la publication (facultatif) :');
+        if (url === null) return;
+        await api(`/posts/${id}/publish/${b.dataset.platform}`, { method: 'POST', body: { url } }); toast('Marqué publié'); break;
+      }
+      case 'discord': await api(`/posts/${id}/discord`, { method: 'POST' }); toast('Publié sur Discord'); break;
+      case 'stats': {
+        const row = b.closest('[data-pubid]');
+        const body = Object.fromEntries([...row.querySelectorAll('input')].map((i) => [i.dataset.k, i.value]));
+        await api(`/publications/${row.dataset.pubid}/stats`, { method: 'PUT', body }); toast('Statistiques enregistrées'); return;
+      }
+    }
+    render();
+  } catch (err) { toast('Erreur : ' + err.message); }
+  finally { b.disabled = false; }
+});
+
+$('#btnGen').onclick = async () => {
+  const n = prompt('Combien de contenus générer ?', '3'); if (!n) return;
+  try { await api('/generate', { method: 'POST', body: { count: Number(n) } }); toast('Le Ministère travaille… (quelques minutes)'); render(); }
+  catch (e) { toast('Erreur : ' + e.message); }
+};
+
+$('#btnBrief').onclick = () => {
+  $('#angleSel').innerHTML = Object.entries(STATE.angles).map(([k, v]) => `<option value="${k}" title="${esc(v)}">${k}</option>`).join('');
+  $('#platBoxes').innerHTML = Object.entries(STATE.platforms).map(([k, p]) =>
+    `<label style="flex-direction:row;align-items:center;text-transform:none;font:14px var(--sans);color:var(--ink)"><input type="checkbox" name="pf" value="${k}" ${['tiktok', 'instagram', 'discord'].includes(k) ? 'checked' : ''} style="width:auto"> ${esc(p.label)}</label>`).join('');
+  $('#fBrief').reset(); $('#dlgBrief').showModal();
+};
+$('#dlgBrief').addEventListener('close', async () => {
+  if ($('#dlgBrief').returnValue !== 'ok') return;
+  const f = $('#fBrief');
+  const body = { format: f.format.value, angle: f.angle.value, hook: f.hook.value, platforms: [...f.querySelectorAll('[name=pf]:checked')].map((x) => x.value) };
+  try { await api('/brief', { method: 'POST', body }); toast('Brief envoyé : le contenu apparaîtra dans « À valider »'); }
+  catch (e) { toast('Erreur : ' + e.message); }
+});
+
+let EDITING = null;
+const VFIELDS = ['kicker', 'headline', 'body', 'footer', 'stamp', 'figure'];
+function openEdit(p) {
+  EDITING = p;
+  const v = p.content.visual;
+  const caps = Object.fromEntries(p.publications.map((x) => [x.platform, x]));
+  $('#editFields').innerHTML = `
+    <label>Titre interne<input name="title" value="${esc(p.content.title)}"></label>
+    <h2 style="font-size:16px">Visuel (${esc(v.template)})</h2>
+    ${VFIELDS.map((k) => `<label>${k}${k === 'body' ? `<textarea name="v_${k}">${esc(v[k])}</textarea>` : `<input name="v_${k}" value="${esc(v[k])}">`}</label>`).join('')}
+    ${p.content.scenes?.length ? `<h2 style="font-size:16px">Scènes du short (JSON)</h2><textarea name="scenes" style="min-height:220px;font-family:var(--mono)">${esc(JSON.stringify(p.content.scenes, null, 2))}</textarea>
+      <label>Voix off<textarea name="voiceover">${esc(p.content.voiceover)}</textarea></label>` : ''}
+    <h2 style="font-size:16px">Légendes</h2>
+    <p style="margin:0;color:var(--muted);font-size:13px">{LIEN} sera remplacé par le lien tracké. Hashtags : séparés par des espaces.</p>
+    ${Object.keys(caps).map((pf) => {
+      const raw = (EDITING.captions_raw ||= JSON.parse(EDITING.captions || '{}'))[pf] || { text: '', hashtags: [] };
+      return `<label>${esc(STATE.platforms[pf]?.label || pf)}<textarea name="c_${pf}">${esc(raw.text)}</textarea><input name="h_${pf}" value="${esc((raw.hashtags || []).join(' '))}"></label>`;
+    }).join('')}`;
+  $('#dlgEdit').showModal();
+}
+$('#dlgEdit').addEventListener('close', async () => {
+  if ($('#dlgEdit').returnValue !== 'ok' || !EDITING) return;
+  const f = $('#fEdit');
+  const content = { title: f.title.value, visual: { ...EDITING.content.visual } };
+  VFIELDS.forEach((k) => { content.visual[k] = f['v_' + k].value; });
+  if (f.scenes) {
+    try { content.scenes = JSON.parse(f.scenes.value); } catch { return toast('JSON des scènes invalide'); }
+    content.voiceover = f.voiceover.value;
+  }
+  const captions = {};
+  for (const pf of Object.keys(EDITING.captions_raw || {})) {
+    captions[pf] = { platform: pf, text: f['c_' + pf].value, hashtags: f['h_' + pf].value.split(/\s+/).filter(Boolean).map((h) => h.replace(/^#/, '')) };
+  }
+  toast('Enregistrement et rendu…');
+  try { await api(`/posts/${EDITING.id}/content`, { method: 'PUT', body: { content, captions } }); toast('Contenu mis à jour'); render(); }
+  catch (e) { toast('Erreur : ' + e.message); }
+});
+
+render();
+setInterval(() => { if (STATE?.running || STATE?.counts?.rendering) render(); }, 8000);
+</script>
+</body>
+</html>

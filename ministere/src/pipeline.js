@@ -114,14 +114,13 @@ export async function produce(postId) {
     media.push({ kind: 'image', ratio: '9:16', file: await renderPNG(cover.template, cover, 'story', path.join(dir, 'visuel-9x16.png')) });
 
     if (post.format === 'short' && content.scenes?.length) {
-      const scenes = [];
-      for (const [i, s] of content.scenes.entries()) {
+      const scenes = content.scenes.map((s) => {
         const d = visualData(s, st, campaign);
-        scenes.push({ image: await renderPNG(d.template, d, 'story', path.join(dir, `scene-${i + 1}.png`)), seconds: s.seconds });
-      }
+        return { template: d.template, data: d, seconds: s.seconds };
+      });
       const end = { headline: 'Rejoignez l\'État du Sud', body: `${campaign.server_name} — serveur RP FiveM francophone`,
         cta: campaign.display_link, figure: st.isOpen ? 'Frontières ouvertes' : `Ouverture : ${st.openingLabel}` };
-      scenes.push({ image: await renderPNG('endcard', end, 'story', path.join(dir, 'scene-fin.png')), seconds: 3 });
+      scenes.push({ template: 'endcard', data: end, seconds: 3.5 });
 
       // Priorité à ta voix enregistrée ; sinon synthèse vocale si configurée ; sinon musique seule.
       const recorded = recordedVoice(postId);

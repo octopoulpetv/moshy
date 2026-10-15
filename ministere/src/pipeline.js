@@ -10,7 +10,7 @@ import { strategistSystem, strategistSchema, writerSystem, writerSchema, mediaKi
 import { postCode } from './links.js';
 import { renderPNG, closeBrowser } from './studio/render.js';
 import { buildShort } from './studio/video.js';
-import { synthesize } from './studio/tts.js';
+import { synthesize, recordedVoice, prepareVoice } from './studio/tts.js';
 
 const log = (...a) => console.log(new Date().toISOString().slice(11, 19), '[ministère]', ...a);
 
@@ -91,7 +91,7 @@ export function savePost(brief, content) {
 
 // ── 3. Studio ────────────────────────────────────────────────────────────
 function visualData(v, st, campaign) {
-  const d = { ...v, cta: campaign.display_link, disclaimer: `${campaign.server_name} · serveur RP FiveM · fiction` };
+  const d = { ...v, cta: campaign.display_link, disclaimer: `${campaign.server_name} · serveur RP FiveM` };
   if (v.template === 'countdown') d.figure = st.isOpen ? 'OUVERT' : st.daysLeft === 0 ? 'CE SOIR' : `J-${st.daysLeft}`;
   if (v.corp === 'none') d.corp = '';
   return d;
@@ -123,16 +123,24 @@ export async function produce(postId) {
         cta: campaign.display_link, figure: st.isOpen ? 'Frontières ouvertes' : `Ouverture : ${st.openingLabel}` };
       scenes.push({ image: await renderPNG('endcard', end, 'story', path.join(dir, 'scene-fin.png')), seconds: 3 });
 
-      const voice = await synthesize(content.voiceover, path.join(dir, 'voix'));
+      // Priorité à ta voix enregistrée ; sinon synthèse vocale si configurée ; sinon musique seule.
+      const recorded = recordedVoice(postId);
+      const voice = recorded
+        ? await prepareVoice(recorded, path.join(dir, 'voix'))
+        : await synthesize(content.voiceover, path.join(dir, 'voix'));
       const video = await buildShort({ scenes, voice, outFile: path.join(dir, 'short-9x16.mp4'), workDir: path.join(dir, 'work') });
-      media.unshift({ kind: 'video', ratio: '9:16', file: video.file, seconds: video.seconds, voice: Boolean(voice) });
+      media.unshift({ kind: 'video', ratio: '9:16', file: video.file, seconds: video.seconds,
+        voice: recorded ? 'gouverneur' : voice ? 'synthese' : null });
     }
 
     const rel = media.map((m) => ({ ...m, file: path.relative(MEDIA_DIR, m.file) }));
-    db.prepare(`UPDATE posts SET status = 'ready', media = ? WHERE id = ?`).run(JSON.stringify(rel), postId);
+    // Un post déjà validé ou publié garde son statut après un nouveau rendu.
+    const status = ['approved', 'published'].includes(post.status) ? post.status : 'ready';
+    db.prepare(`UPDATE posts SET status = ?, media = ? WHERE id = ?`).run(status, JSON.stringify(rel), postId);
     log(`studio : post #${postId} rendu (${rel.map((m) => m.kind).join(', ')})`);
   } catch (e) {
-    db.prepare(`UPDATE posts SET status = 'draft', error = ? WHERE id = ?`).run(String(e.message || e), postId);
+    const status = ['approved', 'published'].includes(post.status) ? post.status : 'draft';
+    db.prepare(`UPDATE posts SET status = ?, error = ? WHERE id = ?`).run(status, String(e.message || e), postId);
     throw e;
   }
 }

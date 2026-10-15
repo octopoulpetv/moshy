@@ -6,7 +6,10 @@ import { fileURLToPath } from 'node:url';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const DATA_DIR = path.join(ROOT, 'data');
 export const MEDIA_DIR = path.join(DATA_DIR, 'media');
+// Voix du gouverneur enregistrées par toi : jamais effacées par un nouveau rendu.
+export const VOICES_DIR = path.join(DATA_DIR, 'voices');
 fs.mkdirSync(MEDIA_DIR, { recursive: true });
+fs.mkdirSync(VOICES_DIR, { recursive: true });
 
 const env = process.env;
 

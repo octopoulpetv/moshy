@@ -31,7 +31,7 @@ fabrique les visuels et les vidéos, puis mesure ce qui ramène vraiment des jou
 3. Le **studio** fabrique les médias : une image 4:5 (fil Instagram, X, Facebook), une image 9:16
    (stories) et, pour les Shorts, une vidéo verticale avec un lent zoom, des fondus, la voix off,
    la musique et une carte de fin.
-4. Dans le **dashboard**, tu valides ou tu corriges. Ensuite, tu copies la légende, tu télécharges
+4. Dans le **dashboard**, tu enregistres la voix du Gouverneur pour les Shorts, puis tu valides ou tu corriges. Ensuite, tu copies la légende, tu télécharges
    le média et tu publies toi-même. Sur Discord, un clic suffit : le bot publie à ta place.
 5. L'**analyste** mesure :
    - les **clics** sur les liens courts `/go/…` (un lien par post et par plateforme, plus un lien « en bio » par plateforme) ;
@@ -150,6 +150,27 @@ node src/cli.js stats        # statistiques consolidées
 - **Claude** (`claude-opus-5-5`) : environ 0,03 à 0,06 $ par contenu. Avec 3 contenus par jour,
   compte quelques dollars par mois. Le coût cumulé s'affiche dans le dashboard.
 - **Rendu** : local et gratuit (Chromium + ffmpeg). Prévois au moins 2 Go de RAM pour la vidéo.
-- **Voix off** : `TTS_PROVIDER=none` (vidéo avec musique seule), `piper` (gratuit, local) ou
-  `elevenlabs` (environ 5 €/mois, nettement plus naturel). Le Ministère n'utilise que la synthèse vocale :
-  n'utilise jamais une voix clonée de quelqu'un sans son accord.
+- **Voix off** : gratuite, c'est ta voix (voir ci-dessous).
+
+## La voix du Gouverneur
+
+Les Shorts sont narrés par le gouverneur Leopold Van-Ranke. Claude écrit son texte à la première
+personne (20 à 30 secondes), et c'est toi qui le dis.
+
+1. Dans le dashboard, chaque Short affiche un bloc **🎙 Voix du Gouverneur** avec le texte à lire.
+2. Tu as deux façons d'ajouter ta voix :
+   - **Enregistrer**, directement dans le navigateur (ordinateur ou téléphone). Le micro du navigateur
+     ne fonctionne qu'en **HTTPS**, d'où l'intérêt du nom de domaine ;
+   - **Importer un fichier** (mp3, m4a, wav, ogg, webm), par exemple une prise faite sur Audacity avec
+     un bon micro, ou un mémo vocal de téléphone.
+3. Le Ministère nettoie la prise automatiquement : il coupe les silences du début et de la fin, retire
+   les basses parasites, compresse légèrement et met le volume au standard des réseaux (-16 LUFS).
+   Il remonte ensuite la vidéo : les scènes s'allongent pour suivre ta voix.
+4. Tant qu'un Short n'a pas de voix, il porte l'étiquette « voix à faire », et le dashboard te demande
+   confirmation si tu le valides quand même.
+
+Conseils de prise : une pièce sans écho (une pièce avec des rideaux ou des vêtements absorbe le son),
+le micro à une quinzaine de centimètres, et un ton posé et lent. Le Gouverneur ne se presse jamais.
+
+En secours, `TTS_PROVIDER=piper` ou `elevenlabs` génère une voix de synthèse pour les Shorts que tu
+n'as pas enregistrés. Ta prise reste toujours prioritaire.

@@ -69,7 +69,7 @@ ${css}
 }
 
 const ctaBar = (d, fg, bg) => `<div class="cta" style="color:${fg};background:${bg}">
-  <span>${esc(d.cta || 'Rejoindre : lien en bio')}</span><span>${esc(d.disclaimer || 'THE EMPIRE · serveur RP FiveM · fiction')}</span></div>`;
+  <span>${esc(d.cta || 'Rejoindre : lien en bio')}</span><span>${esc(d.disclaimer || 'THE EMPIRE · serveur RP FiveM')}</span></div>`;
 
 // ── 1. Affiche de propagande ────────────────────────────────────────────
 function affiche(d, { w, h }) {

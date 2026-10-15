@@ -1,7 +1,9 @@
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 import path from 'node:path';
 import express from 'express';
-import { config, ROOT, MEDIA_DIR, loadCampaign } from './config.js';
+import { config, ROOT, MEDIA_DIR, VOICES_DIR, loadCampaign } from './config.js';
+import { recordedVoice } from './studio/tts.js';
 import { db, json } from './db.js';
 import { campaignState } from './campaign.js';
 import { computeStats, boostCandidates } from './analyst.js';
@@ -70,6 +72,7 @@ export function startServer() {
         link: shortUrl(p.code),
       })),
       reddit_title: json(post.content)?.reddit_title || '',
+      has_voice: Boolean(recordedVoice(post.id)),
     };
   };
 
@@ -143,6 +146,33 @@ export function startServer() {
     await produce(getPost(req.params.id).id);
     await closeBrowser();
     res.json(present(getPost(req.params.id)));
+  }));
+
+  // Ta prise de voix (enregistrée dans le navigateur ou importée), puis nouveau montage de la vidéo.
+  const AUDIO_EXT = { 'audio/webm': 'webm', 'video/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mpeg': 'mp3', 'audio/mp3': 'mp3',
+    'audio/mp4': 'm4a', 'audio/x-m4a': 'm4a', 'audio/aac': 'aac', 'audio/wav': 'wav', 'audio/x-wav': 'wav', 'audio/wave': 'wav' };
+  api.post('/posts/:id/voice', express.raw({ type: () => true, limit: '40mb' }), wrap(async (req, res) => {
+    const post = getPost(req.params.id);
+    if (post.format !== 'short') throw new Error('Seuls les Shorts ont une voix off');
+    const mime = (req.headers['content-type'] || '').split(';')[0].trim();
+    const ext = AUDIO_EXT[mime];
+    if (!ext) throw new Error(`Format audio non reconnu (${mime || 'inconnu'}) : utilise mp3, m4a, wav, ogg ou webm`);
+    if (!req.body?.length) throw new Error('Fichier audio vide');
+    const old = recordedVoice(post.id);
+    if (old) fs.rmSync(old);
+    fs.writeFileSync(path.join(VOICES_DIR, `post-${post.id}.${ext}`), req.body);
+    await produce(post.id);
+    await closeBrowser();
+    res.json(present(getPost(post.id)));
+  }));
+
+  api.delete('/posts/:id/voice', wrap(async (req, res) => {
+    const post = getPost(req.params.id);
+    const old = recordedVoice(post.id);
+    if (old) fs.rmSync(old);
+    await produce(post.id);
+    await closeBrowser();
+    res.json(present(getPost(post.id)));
   }));
 
   api.post('/posts/:id/publish/:platform', wrap(async (req, res) => {

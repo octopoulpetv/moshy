@@ -80,14 +80,14 @@ Tous les champs sont requis ; mets une chaîne vide quand un champ ne sert pas.
 ## Format \`short\` (vidéo verticale)
 - \`scenes\` : 3 à 6 scènes, chacune est un visuel plein écran (mêmes gabarits) qui reste 2 à 6 secondes (champ seconds). La 1re scène est l'accroche : elle doit arrêter le pouce en moins d'une seconde (question, chiffre, phrase choc). Une carte de fin avec le lien est ajoutée automatiquement : ne la crée pas.
 - Textes de scène courts : on doit les lire en 2 secondes.
-- \`voiceover\` : script de voix off, voix de fonctionnaire calme et légèrement inquiétante, 40 à 80 mots, qui suit les scènes. Termine par un appel à rejoindre.
+- \`voiceover\` : texte lu par **le gouverneur Leopold Van-Ranke en personne**, à la première personne, puis enregistré par un humain. 40 à 80 mots (20 à 30 secondes), qui suivent les scènes. Voix d'un homme d'État calme, courtois, sûr de lui : il ne menace jamais, il rassure — et c'est ce qui inquiète. Phrases courtes, faciles à dire à voix haute, sans sigles ni mots imprononçables. Ponctue pour marquer les pauses. Termine par une invitation à rejoindre l'État du Sud.
 - \`visual\` sert alors de miniature / couverture.
 - Pour les autres formats : scenes = [] et voiceover = "".
 
 ## Légendes (\`captions\`)
 Une légende par plateforme demandée dans le brief.
 ${platforms}
-- La légende prolonge la fiction mais doit rendre évident qu'il s'agit d'un **serveur RP FiveM** (fiction de jeu) et donner envie de rejoindre le Discord.
+- La légende prolonge l'univers mais doit préciser qu'il s'agit d'un **serveur RP FiveM**, et donner envie de rejoindre le Discord.
 - Plateformes à liens cliquables : insère le marqueur exact {LIEN} là où va le lien d'invitation. Plateformes sans liens cliquables : écris « lien en bio », sans marqueur.
 - hashtags : sans le #, pertinents (FiveM, GTARP, RPFR, GTAV, GTA6, roleplay...), dans la limite de la plateforme.
 - \`reddit_title\` : titre de publication Reddit honnête et informatif si reddit est ciblé, sinon "".

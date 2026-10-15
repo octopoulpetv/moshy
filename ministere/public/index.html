@@ -79,6 +79,14 @@ label{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;co
 label input,label select{width:100%;font:14px var(--sans);text-transform:none;letter-spacing:0;color:var(--ink)}
 label textarea{font:13px var(--sans);text-transform:none;letter-spacing:0;color:var(--ink)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.voice{border:1px solid #4a3b12;background:#1c1910;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.voice .vh{display:flex;justify-content:space-between;align-items:center;font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.voice .vh span{font-weight:400;letter-spacing:.04em}
+.voice .vh .ok{color:var(--green)} .voice .vh .ko{color:var(--red2)}
+.script{margin:0;font:400 17px/1.6 'IBM Plex Sans',sans-serif;color:var(--ink);white-space:pre-wrap}
+.btn.rec{background:#3a1512;border-color:var(--red)} .btn.rec.on{background:var(--red);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.7}}
+label.btn{display:inline-block;font:600 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink);flex-direction:row}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);padding:10px 16px;border-radius:8px;z-index:20;font-size:14px}
 @media (max-width:520px){.grid{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
 </style>
@@ -186,15 +194,59 @@ function pubHtml(p, pub) {
   </div></details>`;
 }
 
+function voiceHtml(p) {
+  const words = p.content.voiceover.trim().split(/\s+/).length;
+  return `<div class="voice">
+    <div class="vh">🎙 Voix du Gouverneur <span class="${p.has_voice ? 'ok' : 'ko'}">${p.has_voice ? 'enregistrée' : 'à enregistrer'} · ~${Math.round(words / 2.5)} s</span></div>
+    <p class="script">${esc(p.content.voiceover)}</p>
+    <div class="actions">
+      <button class="btn rec" data-act="rec" data-id="${p.id}">● Enregistrer</button>
+      <label class="btn">Importer un fichier<input type="file" accept="audio/*,.m4a,.mp3,.wav,.ogg,.webm" data-voicefile="${p.id}" hidden></label>
+      ${p.has_voice ? `<button class="btn ghost" data-act="unvoice" data-id="${p.id}">Supprimer la voix</button>` : ''}
+    </div></div>`;
+}
+
+const EXT_MIME = { mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav', ogg: 'audio/ogg', webm: 'audio/webm', aac: 'audio/aac' };
+async function uploadVoice(id, blob, name = '') {
+  const type = (blob.type || EXT_MIME[name.split('.').pop().toLowerCase()] || '').split(';')[0];
+  toast('Montage de la vidéo avec ta voix…');
+  const res = await fetch(`/api/posts/${id}/voice`, { method: 'POST', headers: { 'content-type': type }, body: blob });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  toast('Vidéo remontée avec la voix du Gouverneur');
+  render();
+}
+
+let REC = null; // { recorder, chunks, btn, id, timer, start }
+async function toggleRecord(btn, id) {
+  if (REC) { REC.recorder.stop(); return; }
+  if (!navigator.mediaDevices?.getUserMedia) return toast('Micro indisponible : le dashboard doit être en HTTPS. Importe un fichier à la place.');
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: false, channelCount: 1 } });
+  const mime = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'].find((m) => window.MediaRecorder?.isTypeSupported?.(m)) || '';
+  const recorder = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 160000 } : undefined);
+  REC = { recorder, chunks: [], btn, id, start: Date.now() };
+  recorder.ondataavailable = (e) => e.data.size && REC.chunks.push(e.data);
+  recorder.onstop = async () => {
+    const { chunks, id: pid } = REC;
+    clearInterval(REC.timer); stream.getTracks().forEach((t) => t.stop()); REC = null;
+    btn.classList.remove('on'); btn.textContent = '● Enregistrer';
+    try { await uploadVoice(pid, new Blob(chunks, { type: recorder.mimeType || 'audio/webm' })); } catch (e) { toast('Erreur : ' + e.message); }
+  };
+  recorder.start(250);
+  btn.classList.add('on');
+  const tick = () => { const s = Math.round((Date.now() - REC.start) / 1000); btn.textContent = `■ Arrêter (${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')})`; };
+  tick(); REC.timer = setInterval(tick, 500);
+}
+
 function cardHtml(p) {
   const v = p.content?.visual || {};
   const canEdit = ['ready', 'approved', 'rejected', 'draft'].includes(p.status);
   return `<article class="card" data-post="${p.id}">
     ${mediaHtml(p)}
     <div class="body">
-      <div class="chips"><span class="chip s-${p.status}">${p.status}</span><span class="chip">${esc(p.format)}</span><span class="chip">${esc(p.angle)}</span><span class="chip">#${p.id}</span></div>
+      <div class="chips"><span class="chip s-${p.status}">${p.status}</span><span class="chip">${esc(p.format)}</span><span class="chip">${esc(p.angle)}</span><span class="chip">#${p.id}</span>${p.format === 'short' ? `<span class="chip" style="color:${p.has_voice ? 'var(--green)' : 'var(--red2)'}">${p.has_voice ? 'voix ✓' : 'voix à faire'}</span>` : ''}</div>
       <div class="title">${esc(p.title)}</div>
-      ${p.content?.voiceover ? `<div style="color:var(--muted);font-size:13px"><b>Voix off :</b> ${esc(p.content.voiceover)}</div>` : ''}
+      ${p.format === 'short' && p.content?.voiceover ? voiceHtml(p) : ''}
       ${p.error ? `<div class="err">${esc(p.error)}</div>` : ''}
       ${p.review_note ? `<div class="note">Note : ${esc(p.review_note)}</div>` : ''}
       <div class="actions">
@@ -273,10 +325,16 @@ $('#main').addEventListener('click', async (e) => {
   }
   const b = e.target.closest('[data-act]'); if (!b) return;
   const id = b.dataset.id;
-  b.disabled = true;
+  if (b.dataset.act !== 'rec') b.disabled = true;
   try {
     switch (b.dataset.act) {
-      case 'approve': await api(`/posts/${id}/approve`, { method: 'POST' }); toast('Validé'); break;
+      case 'approve': {
+        const post = POSTS.find((x) => String(x.id) === id);
+        if (post?.format === 'short' && !post.has_voice && !confirm('Ce Short n\'a pas encore la voix du Gouverneur. Valider quand même ?')) return;
+        await api(`/posts/${id}/approve`, { method: 'POST' }); toast('Validé'); break;
+      }
+      case 'rec': return await toggleRecord(b, id);
+      case 'unvoice': if (!confirm('Supprimer ta prise de voix ?')) return; await api(`/posts/${id}/voice`, { method: 'DELETE' }); toast('Voix supprimée'); break;
       case 'reject': await api(`/posts/${id}/reject`, { method: 'POST', body: { note: prompt('Pourquoi ? (aide à améliorer les prochains)') || '' } }); break;
       case 'render': toast('Rendu en cours…'); await api(`/posts/${id}/render`, { method: 'POST' }); toast('Rendu terminé'); break;
       case 'edit': return openEdit(POSTS.find((p) => String(p.id) === id));
@@ -295,6 +353,11 @@ $('#main').addEventListener('click', async (e) => {
     render();
   } catch (err) { toast('Erreur : ' + err.message); }
   finally { b.disabled = false; }
+});
+
+$('#main').addEventListener('change', async (e) => {
+  const input = e.target.closest('[data-voicefile]'); if (!input?.files?.[0]) return;
+  try { await uploadVoice(input.dataset.voicefile, input.files[0], input.files[0].name); } catch (err) { toast('Erreur : ' + err.message); }
 });
 
 $('#btnGen').onclick = async () => {
@@ -356,7 +419,7 @@ $('#dlgEdit').addEventListener('close', async () => {
 });
 
 render();
-setInterval(() => { if (STATE?.running || STATE?.counts?.rendering) render(); }, 8000);
+setInterval(() => { if (!REC && (STATE?.running || STATE?.counts?.rendering)) render(); }, 8000);
 </script>
 </body>
 </html>

@@ -48,7 +48,7 @@ permettent concrètement aux joueurs. C'est l'argument n°2 de la campagne.]`
 ## 6. Interdits de communication
 
 - Ne jamais citer de personnalité, parti ou gouvernement **réel**.
-- Ne jamais présenter le contenu comme une information réelle : c'est une fiction
-  de jeu de rôle, et les légendes doivent le rendre évident.
+- Ne jamais présenter le contenu comme une information réelle : chaque légende
+  précise qu'il s'agit d'un serveur RP.
 - Pas de logo Rockstar / GTA, pas de visuels officiels.
 - Pas d'humour sur des drames réels, pas de contenu haineux.

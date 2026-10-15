@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { config } from '../config.js';
+import path from 'node:path';
+import { config, VOICES_DIR } from '../config.js';
 
 const run = promisify(execFile);
 
@@ -39,3 +40,26 @@ export async function synthesize(text, outBase) {
   return null;
 }
 
+
+/** Fichier de voix enregistré pour un post (data/voices/post-12.webm…), ou null. */
+export function recordedVoice(postId) {
+  const f = fs.readdirSync(VOICES_DIR).find((n) => n.startsWith(`post-${postId}.`));
+  return f ? path.join(VOICES_DIR, f) : null;
+}
+
+/**
+ * Prépare ta prise de voix : coupe le silence du début et de la fin, retire les basses
+ * parasites, compresse légèrement et normalise le volume (-16 LUFS, standard des réseaux).
+ */
+export async function prepareVoice(input, outBase) {
+  const out = `${outBase}.wav`;
+  const af = [
+    'silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.1',
+    'areverse', 'silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.3', 'areverse',
+    'highpass=f=70',
+    'acompressor=threshold=-20dB:ratio=3:attack=5:release=120:makeup=2',
+    'loudnorm=I=-16:TP=-1.5:LRA=11',
+  ].join(',');
+  await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', input, '-af', af, '-ar', '48000', '-ac', '1', out]);
+  return out;
+}

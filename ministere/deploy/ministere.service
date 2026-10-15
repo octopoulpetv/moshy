@@ -1,0 +1,16 @@
+[Unit]
+Description=Le Ministère — promotion THE EMPIRE
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ministere
+WorkingDirectory=/opt/ministere/ministere
+ExecStart=/usr/bin/node src/index.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

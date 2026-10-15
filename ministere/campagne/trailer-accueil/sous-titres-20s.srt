@@ -1,0 +1,25 @@
+1
+00:00:02,600 --> 00:00:03,800
+Votre dossier est ouvert.
+
+2
+00:00:04,400 --> 00:00:06,000
+Vous avez passé la frontière.
+
+3
+00:00:07,200 --> 00:00:09,600
+Travaillez. Bâtissez.
+Faites-vous un nom.
+
+4
+00:00:10,400 --> 00:00:12,800
+Bien sûr…
+certains préfèrent l'ombre.
+
+5
+00:00:13,600 --> 00:00:15,000
+Servirez-vous l'État…
+
+6
+00:00:15,200 --> 00:00:16,600
+ou deviendrez-vous ce qu'il redoute ?

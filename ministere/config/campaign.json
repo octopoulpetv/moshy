@@ -1,0 +1,152 @@
+{
+  "server_name": "THE EMPIRE",
+  "tagline": "Bienvenue dans l'État du Sud.",
+  "timezone": "Europe/Brussels",
+  "opening_at": "2026-11-01T20:00:00+01:00",
+  "phases": [
+    {
+      "id": "mystere",
+      "label": "Le Mystère",
+      "from": "2026-10-15",
+      "to": "2026-10-22",
+      "objective": "Intriguer. Communication 100 % in-universe de l'État du Sud, sans expliquer le serveur. Le lien Discord est présent, discret.",
+      "preferred_angles": [
+        "propagande",
+        "communique_officiel",
+        "mystere_teaser",
+        "satire_corpo"
+      ]
+    },
+    {
+      "id": "revelation",
+      "label": "La Révélation",
+      "from": "2026-10-23",
+      "to": "2026-10-28",
+      "objective": "Révéler qu'il s'agit d'un serveur FiveM RP, montrer les institutions du lore et les scripts maison, ouvrir la pré-inscription whitelist.",
+      "preferred_angles": [
+        "reveal_scripts",
+        "recrutement_metiers",
+        "personnage",
+        "communique_officiel",
+        "faq_onboarding"
+      ]
+    },
+    {
+      "id": "compte_a_rebours",
+      "label": "Le Compte à rebours",
+      "from": "2026-10-29",
+      "to": "2026-11-01",
+      "objective": "Urgence. Décompte quotidien, rappel de la date et du lien. Boost payant sur le meilleur contenu.",
+      "preferred_angles": [
+        "compte_a_rebours",
+        "propagande",
+        "recrutement_metiers"
+      ]
+    },
+    {
+      "id": "preuve",
+      "label": "La Preuve",
+      "from": "2026-11-02",
+      "to": "2027-12-31",
+      "objective": "Montrer que le serveur vit : moments RP, chiffres, événements, préparation au portage GTA VI.",
+      "preferred_angles": [
+        "personnage",
+        "propagande",
+        "satire_corpo",
+        "recrutement_metiers",
+        "communique_officiel"
+      ]
+    }
+  ],
+  "angles": {
+    "propagande": "Affiche ou slogan de propagande de l'État du Sud, ton administratif froid et ironique.",
+    "communique_officiel": "Décret, avis ou bulletin officiel numéroté de l'administration.",
+    "mystere_teaser": "Fragment énigmatique : fuite de document, avis de recensement, message tronqué.",
+    "satire_corpo": "Fausse publicité ou communiqué de Kronos, Aethernet ou Helix.",
+    "personnage": "Portrait d'une figure du lore (gouverneur, fonctionnaire, citoyen type).",
+    "reveal_scripts": "Présentation d'un script maison (crédit civique, économie en Crédits...) habillée par le lore.",
+    "recrutement_metiers": "Appel à candidatures in-universe : police, médecins, fonctionnaires, entreprises — tourné vers les joueurs.",
+    "compte_a_rebours": "Décompte avant l'ouverture des frontières de l'État du Sud.",
+    "faq_onboarding": "Comment rejoindre : Discord, whitelist, prérequis — présenté comme une démarche administrative."
+  },
+  "platforms": {
+    "tiktok": {
+      "label": "TikTok",
+      "formats": [
+        "short"
+      ],
+      "caption_max": 2200,
+      "hashtags": 5,
+      "clickable_links": false
+    },
+    "youtube": {
+      "label": "YouTube Shorts",
+      "formats": [
+        "short"
+      ],
+      "caption_max": 100,
+      "hashtags": 3,
+      "clickable_links": false
+    },
+    "instagram": {
+      "label": "Instagram",
+      "formats": [
+        "short",
+        "image"
+      ],
+      "caption_max": 2200,
+      "hashtags": 8,
+      "clickable_links": false
+    },
+    "x": {
+      "label": "X (Twitter)",
+      "formats": [
+        "image",
+        "texte",
+        "short"
+      ],
+      "caption_max": 280,
+      "hashtags": 2,
+      "clickable_links": true
+    },
+    "facebook": {
+      "label": "Facebook",
+      "formats": [
+        "image",
+        "short"
+      ],
+      "caption_max": 2000,
+      "hashtags": 3,
+      "clickable_links": true
+    },
+    "reddit": {
+      "label": "Reddit",
+      "formats": [
+        "texte",
+        "image"
+      ],
+      "caption_max": 4000,
+      "hashtags": 0,
+      "clickable_links": true
+    },
+    "discord": {
+      "label": "Discord",
+      "formats": [
+        "image",
+        "short",
+        "texte"
+      ],
+      "caption_max": 2000,
+      "hashtags": 0,
+      "clickable_links": true
+    }
+  },
+  "base_hashtags": [
+    "#FiveM",
+    "#GTARP",
+    "#RPFR",
+    "#GTAV",
+    "#TheEmpireRP"
+  ],
+  "display_link": "Lien en bio"
+}
